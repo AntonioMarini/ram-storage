@@ -1,5 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -pedantic
+LDFLAGS = -lpthread
 
 PHONY = server_build client_build test run clean c_clean s_clean S_BIN C_BIN S_OBJ C_OBJ
 
@@ -21,9 +22,6 @@ C_SOURCES=$(C_DIR)/src
 
 C_EXE=$(C_BINDIR)/ram-storage-client
 
-vpath %.c src
-vpath %.h src
-
 s_objects = $(addprefix $(S_OBJDIR)/, *.o )
 s_headers = $(addprefix $(S_HEADERS)/, *.h)
 s_sources = $(addprefix $(S_SOURCES)/, *.c)
@@ -32,18 +30,21 @@ c_objects = $(addprefix $(C_OBJDIR)/, *.o )
 c_headers = $(addprefix $(C_HEADERS)/, *.h)
 c_sources = $(addprefix $(C_SOURCES)/, *.c)
 
-all: client_build #server
+all: client_build server_build
 
 server_build: $(s_objects) | S_BIN
-	$(CC) $^ -o $(S_EXE)
+	$(CC) $^ -o $(S_EXE) $(LDFLAGS)
 
-client_build: $(c_objects) | C_BIN
+client_build: $(C_OBJDIR)/main.o $(C_OBJDIR)/opqueue.o | C_BIN
 	$(CC) $^ -o $(C_EXE)
 
 $(S_OBJDIR)/%.o: $(s_sources) $(s_headers) | S_OBJ
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(C_OBJDIR)/%.o: $(c_sources) $(c_headers) | C_OBJ
+$(C_OBJDIR)/main.o: $(C_SOURCES)/main.c $(C_SOURCES)/headers/opqueue.h $(C_SOURCES)/headers/consts.h | C_OBJ
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(C_OBJDIR)/opqueue.o: $(C_SOURCES)/opqueue.c $(C_SOURCES)/headers/opqueue.h $(C_SOURCES)/headers/consts.h | C_OBJ
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean: s_clean c_clean
@@ -56,16 +57,20 @@ c_clean:
 
 run_client:
 	./client/bin/ram-storage-client
+
+run_server:
+	./server/bin/ram-storage-server
 	
 S_BIN:
-	mkdir -p $(S_BINDIR)
+	mkdir -p server/bin
 
 S_OBJ:
-	mkdir -p $(S_OBJDIR)
+	mkdir -p server/obj
 
 C_BIN:
 	mkdir -p client/bin
 
 C_OBJ:
+	echo $(c_sources) 
 	mkdir -p client/obj
 
