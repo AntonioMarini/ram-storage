@@ -10,6 +10,7 @@ S_OBJDIR=$(S_DIR)/obj
 S_BINDIR=$(S_DIR)/bin
 S_HEADERS=$(S_DIR)/src/headers
 S_SOURCES=$(S_DIR)/src
+#hello
 
 S_EXE=$(S_BINDIR)/ram-storage-server
 

@@ -96,7 +96,12 @@ void tokenizeArgs(char* argstr, OpQueue* queue){
             }
             char** subopts = takeSubopts(token);
             OpNode* opNode = createOpNode(op, subopts);
-            pushOpNode(&opQueue, opNode);
+
+            if((opNode->op == PRINT && existsOp(opQueue, PRINT)) || (opNode->op == CONNECT && existsOp(opQueue, CONNECT)))
+                printf("opnode is not valid\n");
+            else{  
+                pushOpNode(&opQueue, opNode);
+            }
         }
         token = strtok_r(NULL, optdelim, &save);
     }
@@ -117,19 +122,83 @@ void scanArgs(int argc, const char** argv, char* argstr){
     }
 }
 
+void cleanup(){
+    free(opQueue);
+}
+
+/**
+ * @brief 
+ * 
+ * @param opNode 
+ */
+void executeOp(OpNode* opNode){
+    switch(opNode->op){
+        case CONNECT:{
+            printf("Setting the socket name to connect to...\n");
+            break;
+        }case WRITEDIR:{
+            printf("Writing the folder in the server...\n");
+            break;
+        }case WRITEF:{
+            printf("Writing the files in the server...\n");
+            break;
+        }case CLIENTDIR:{ 
+            printf("Setting the client directory name...\n");
+            break;
+        }case READN:{ 
+            printf("Reading the files from the server...\n");
+            break;
+        }case READRAND:{ 
+            printf("Reading random files from the server...\n");
+            break;
+        }case DIRNAME:{
+            printf("Setting the dirname where to save files...\n");
+            break;
+        }case TIME:{
+            printf("Setting the time to execute commands...\n");
+            break;
+        }case LOCKN:{ 
+            printf("Locking the files...\n");
+            break;
+        }case UNLOCKN:{
+            printf("Unlocking the files...\n");
+            break;
+        }case REMOVEN:{ // da usare congiuntamente a W (controllare se nella coda e gia presente)
+            printf("Removing the files from the server...\n");
+            break;
+        }case PRINT:{ // da usare congiuntamente a W (controllare se nella coda e gia presente)
+            printf("Enabling the debug mode...\n");
+            break;
+        }
+    }
+
+    freeOpNode(opNode);
+}
+
+void executeOpQueue(){
+
+}
+
 int main(int argc, char const *argv[])
 {
+    // 1) scan the args and create an operation queue
     char argstr[2048] = "";
     scanArgs(argc, argv, argstr);
     tokenizeArgs(argstr, &opQueue);
 
-    OpNode* del = popOpNode(&opQueue);
-    printOpQueue(opQueue);
+    //2) set the environment to execute the queue
+    if(!validateOpQueue(opQueue)){
+        printf("Error: Invalid args");
+        return 1;
+    }
 
-    printf("\n\ndeleted node: ");
-    printOpNode(del);
+    // 3) execute the operation queue
+    while(!isEmpty(opQueue)){
+        OpNode* opNode = popOpNode(&opQueue);
+        executeOp(opNode);
+    }
 
-    freeOpNode(del);
-    freeOpQueue(opQueue);
+    // 4) cleanup memory and finish
+    cleanup();
     return 0;
 }

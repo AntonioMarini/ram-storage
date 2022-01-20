@@ -61,6 +61,14 @@ void printOpNode(OpNode* node);
 void printOpQueue(OpQueue opQueue);
 
 /**
+ * @brief Checks wether the queue is empty
+ * 
+ * @param queue 
+ * @return int 
+ */
+int isEmpty(OpQueue queue);
+
+/**
  * @brief Frees memory from an OpNode struct
  * 
  * @param node 
@@ -73,3 +81,27 @@ void freeOpNode(OpNode* node);
  * @param opQueue 
  */
 void freeOpQueue(OpQueue opQueue);
+
+/**
+ * @brief Checks if node is valid
+ * 
+ * @param node 
+ * @return int 
+ */
+int validateOpNode(OpNode* node);
+
+/**
+ * @brief Checks wether the queue contains incompatibilities between operations
+ * 
+ * @return int 
+ */
+int validateOpQueue(OpQueue);
+
+/**
+ * @brief checks if the operation type is in the queue
+ * 
+ * @param opQueue 
+ * @param op 
+ * @return int 
+ */
+int existsOp(OpQueue opQueue, int op);
