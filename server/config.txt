@@ -1,0 +1,4 @@
+nworkers:50
+maxnfiles:100
+maxcapacity:100000
+socketname:socket.sk
