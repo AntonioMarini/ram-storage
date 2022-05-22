@@ -12,10 +12,12 @@
     }
 
 #define ec_meno1(cmd, msg) \
-    if(cmd == -1) {\
+    if((cmd) == -1) {\
         perror("msg");\
         exit(EXIT_FAILURE);\
     } 
 
 #define MAXLINE 1024
 #define MAXARGS 128
+
+#define print printf("qui");

@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 #define UNIX_PATH_MAX 108
 
 #define MALLOC(ptr, sz)			   \

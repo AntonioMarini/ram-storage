@@ -6,8 +6,6 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
-int openConnection(const char* sockname, int msec, const struct timespec abstime);
-
 int closeConnection(const char* sockname);
 
 int openFile(const char* pathname, int flags);

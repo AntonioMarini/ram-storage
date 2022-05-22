@@ -36,13 +36,16 @@ all: client_build server_build
 server_run:	server_build
 	./$(S_EXE)
 
-server_build: $(S_OBJDIR)/main.o $(S_OBJDIR)/thpool.o | S_BIN
+server_build: $(S_OBJDIR)/main.o $(S_OBJDIR)/thpool.o $(S_OBJDIR)/filesIO.o | S_BIN
 	$(CC) $^ -o $(S_EXE) $(LDFLAGS)
 
 client_build: $(C_OBJDIR)/main.o $(C_OBJDIR)/opqueue.o $(C_OBJDIR)/api.o | C_BIN
 	$(CC) $^ -o $(C_EXE)
 
 $(S_OBJDIR)/main.o: $(S_SOURCES)/main.c $(s_headers) | S_OBJ
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(S_OBJDIR)/filesIO.o: $(S_SOURCES)/filesIO.c $(S_SOURCES)/headers/filesIO.h | S_OBJ
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(S_OBJDIR)/thpool.o: $(S_SOURCES)/thpool.c  $(S_SOURCES)/headers/thpool.h | S_OBJ
